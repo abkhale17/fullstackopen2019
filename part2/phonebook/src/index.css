@@ -1,0 +1,54 @@
+.Notify {
+	padding: 8px;
+	padding-left: 30px;
+	font-weight: bold;
+	border:2px solid #1c8901;
+	border-radius: 5px;
+	color: #20ab45;
+	font-size: 20px;
+	background-color: #e6d8d8;
+	
+}
+
+.Error {
+	padding: 8px;
+	padding-left: 30px;
+	font-weight: bold;
+	border:2px solid red;
+	border-radius: 5px;
+	color: #f40606;
+	font-size: 20px;
+	background-color: #d6d6d6;
+}
+
+.Filtered {
+	margin-top: 40px;
+}
+
+.DelBtn {
+	padding: 6px 16px 6px 16px;
+	background-color:
+	#fd0015;
+	border: 1px solid black;
+	font-weight: bold;
+	font-size: 14px;
+	border-radius: 9px;
+	color: #fff;
+	margin: 4px 8px;
+}
+
+.addBtn {
+	padding: 6px 20px 6px 20px;
+	background-color: #20e61b;
+	border: 1px solid black;
+	font-weight: bold;
+	font-size: 14px;
+	border-radius: 9px;
+	color: #fff;
+	margin: 16px auto;
+}
+
+input {
+	border-radius: 1px;
+	padding:4px;
+}
