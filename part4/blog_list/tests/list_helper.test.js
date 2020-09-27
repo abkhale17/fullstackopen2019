@@ -79,16 +79,26 @@ describe('total likes and favourite blog', () => {
 		expect(result).toBe(36)
 	})
 
+  // 4.5 favoriteBlog
 	test('Blogs with many likes', () => {
 		const result = listHelper.favoriteBlog(blogs)
 		expect(result).toEqual(blogs[2])
 	})
 
+	// 4.6 Most blogs
 	test('Authors with most blogs', () => {
 		const result = listHelper.mostBlogs(blogs)
 		expect(result).toEqual({
   		author: "Robert C. Martin",
   		blogs: 3
+		})
+	})
+	// 4.7 Most Likes 
+	test('Authors with most likes', () => {
+		const result = listHelper.mostLikes(blogs)
+		expect(result).toEqual({
+  		author: "Edsger W. Dijkstra",
+  		likes: 17
 		})
 	})
 })

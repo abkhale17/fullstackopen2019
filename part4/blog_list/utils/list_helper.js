@@ -44,8 +44,32 @@ const mostBlogs = (blogs) => {
 	return objs[0]
 }
 
+const mostLikes = (blogs) => {
+	var authorSet = new Set()
+	var authorObjects = [], obj = {}
+	blogs.forEach((blog) => {
+		if(!authorSet.has(blog.author)){
+			obj = {}
+			obj.author = blog.author
+			obj.likes = blog.likes
+			authorObjects.push(obj)
+			authorSet.add(blog.author)
+		} else {
+			for (var i = 0; i < authorObjects.length; i++) {
+				if(authorObjects[i].author === blog.author) {
+					authorObjects[i].likes += blog.likes
+					break
+				}
+			}
+		}
+	})
+	authorObjects.sort((author1, author2) => author2.likes - author1.likes)
+	return authorObjects[0]
+}
+
 module.exports = {
 	totalLikes,
 	favoriteBlog,
-	mostBlogs
+	mostBlogs,
+	mostLikes
 }
