@@ -1,6 +1,6 @@
 const listHelper = require('../utils/list_helper')
 
-describe('total likes', () => {
+describe('total likes and favourite blog', () => {
 
   const listWithOneBlog = [
     {
@@ -16,6 +16,11 @@ describe('total likes', () => {
   test('when list has only one blog, equals the likes of that', () => {
     const result = listHelper.totalLikes(listWithOneBlog)
     expect(result).toBe(5)
+  })
+
+  test('when list has only one blog, It is by default favourite', () => {
+    const result = listHelper.favoriteBlog(listWithOneBlog)
+    expect(result).toEqual(listWithOneBlog[0])
   })
 
   const blogs = [ 
@@ -72,6 +77,11 @@ describe('total likes', () => {
   test('Blogs with many likes', () => {
 		const result = listHelper.totalLikes(blogs)
 		expect(result).toBe(36)
+	})
+
+	test('Blogs with many likes', () => {
+		const result = listHelper.favoriteBlog(blogs)
+		expect(result).toEqual(blogs[2])
 	})
 })
 
