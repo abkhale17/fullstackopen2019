@@ -22,6 +22,27 @@ describe("testing backend blogs", () => {
       expect(res.id).toBeDefined()
     });
   })
+
+  test('HTTP POST request creates new blog and length is increased by one', async () => {
+
+    const preResponse = await api.get('/api/blogs')
+    var intitialLength = preResponse.body.length
+
+    const newBlog = 
+      {
+        title: "ohh! new delicious recipe 2 addder",
+        author: "anonymous23",
+        url: "https://me.anonymous.com",
+        likes:90909,
+      }
+    await api.post('/api/blogs')
+      .send(newBlog)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    const postResponse = await api.get('/api/blogs')
+    expect(postResponse.body).toHaveLength(intitialLength +1)
+  })
 })
 
 
