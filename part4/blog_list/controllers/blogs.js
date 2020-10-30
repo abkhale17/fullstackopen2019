@@ -9,6 +9,9 @@ Router.get('/', (req, res) => {
 
 Router.post('/', (req, res, next) => {
   const body = req.body
+  if(body.likes === undefined) {
+    body.likes = 0
+  }
 
   const blog = new Blog({...body})
   

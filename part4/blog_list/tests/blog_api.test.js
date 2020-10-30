@@ -43,6 +43,21 @@ describe("testing backend blogs", () => {
     const postResponse = await api.get('/api/blogs')
     expect(postResponse.body).toHaveLength(intitialLength +1)
   })
+
+  test('if the likes property is missing from the request, it will default to the value 0', async () => {
+    const newBlog = 
+      {
+        title: "blog without likes",
+        author: "MrX",
+        url: "https://me.x.com",
+      }
+    const response = await api.post('/api/blogs')
+      .send(newBlog)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    expect(response.body.likes).toBe(0)
+  })
 })
 
 
