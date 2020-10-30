@@ -46,4 +46,16 @@ Router.delete('/:id', (request, response, next) => {
     .catch(error => next(error))
 })
 
+Router.put('/:id', (request, response, next) => {
+  const body = request.body
+
+  const blog = {...body}
+
+  Blog.findByIdAndUpdate(request.params.id, blog, { new: true })
+    .then(updatedBlog => {
+      response.json(updatedBlog)
+    })
+    .catch(error => next(error))
+})
+
 module.exports = Router
