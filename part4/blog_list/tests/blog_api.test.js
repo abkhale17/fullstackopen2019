@@ -58,6 +58,17 @@ describe("testing backend blogs", () => {
 
     expect(response.body.likes).toBe(0)
   })
+
+  test('if the title and url properties are missing from the request data, the backend responds to the request with the status code 400 Bad Request.', async () => {
+    const newBlog = 
+      {
+        url: "https://me.x.com",
+      }
+    await api.post('/api/blogs')
+      .send(newBlog)
+      .expect(400)
+
+  })
 })
 
 

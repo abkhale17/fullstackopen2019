@@ -9,6 +9,9 @@ Router.get('/', (req, res) => {
 
 Router.post('/', (req, res, next) => {
   const body = req.body
+  if(body.title === undefined || body.author === undefined) {
+    return res.status(400).end()
+  }
   if(body.likes === undefined) {
     body.likes = 0
   }
