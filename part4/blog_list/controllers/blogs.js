@@ -1,10 +1,23 @@
 const Router = require('express').Router()
+const blog = require('../models/blog')
 const Blog = require('../models/blog')
 
 Router.get('/', (req, res) => {
 	Blog.find({}).then((blogs) => {
 		res.json(blogs)
-	})
+  })
+})
+
+Router.get('/:id', (request, response, next) => {
+  Blog.findById(request.params.id)
+    .then(blog => {
+      if (blog) {
+        response.json(blog)
+      } else {
+        response.status(404).end()
+      }
+    })
+    .catch(error => next(error))
 })
 
 Router.post('/', (req, res, next) => {
@@ -21,6 +34,14 @@ Router.post('/', (req, res, next) => {
   blog.save()
     .then(savedBlog => {
       res.json(savedBlog)
+    })
+    .catch(error => next(error))
+})
+
+Router.delete('/:id', (request, response, next) => {
+  Blog.findByIdAndRemove(request.params.id)
+    .then(() => {
+      response.status(204).end()
     })
     .catch(error => next(error))
 })
