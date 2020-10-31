@@ -1,25 +1,28 @@
 const Router = require('express').Router()
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
-Router.get('/', (req, res) => {
-	Blog.find({}).then((blogs) => {
-		res.json(blogs)
-  })
+Router.get('/', async (req, res) => {
+  const blogs = await Blog.find({}).populate('user')
+  res.json(blogs)
 })
 
-Router.get('/:id', (request, response, next) => {
-  Blog.findById(request.params.id)
-    .then(blog => {
-      if (blog) {
-        response.json(blog)
-      } else {
-        response.status(404).end()
-      }
-    })
-    .catch(error => next(error))
+Router.get('/:id', async (request, response, next) => {
+  const blog = await Blog.findById(request.params.id)
+
+  try {
+    if (blog) {
+      response.json(blog)
+    } else {
+      response.status(404).end()
+    }
+  } catch {
+    next(error)
+  }
+
 })
 
-Router.post('/', (req, res, next) => {
+Router.post('/', async (req, res, next) => {
   const body = req.body
   if(body.title === undefined || body.author === undefined) {
     return res.status(400).end()
@@ -28,13 +31,21 @@ Router.post('/', (req, res, next) => {
     body.likes = 0
   }
 
-  const blog = new Blog({...body})
+  const users = await User.find({})
+  //any user from the database is designated as its creator
+  const userTemp = users[Math.floor(Math.random() * users.length)]
+
+  const blog = new Blog({
+    title: body.title,
+    author: body.author,
+    url: body.url,
+    user: userTemp.id
+  })
   
-  blog.save()
-    .then(savedBlog => {
-      res.json(savedBlog)
-    })
-    .catch(error => next(error))
+  const savedBlog = await blog.save()
+  userTemp.blogs = userTemp.blogs.concat(savedBlog._id)
+  await userTemp.save()
+  res.json(savedBlog)
 })
 
 Router.delete('/:id', (request, response, next) => {

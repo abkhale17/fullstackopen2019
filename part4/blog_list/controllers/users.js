@@ -4,7 +4,7 @@ const User = require('../models/user')
 
 
 usersRouter.get('/', async (req, res ) => {
-  const response = await User.find({})
+  const response = await User.find({}).populate('blogs')
   res.json(response)
 })
 
@@ -12,7 +12,7 @@ usersRouter.post('/', async (req, res, next) => {
   const body = req.body
 
   if(body.password === undefined) {
-    return res.status(400).json({ erro: "Password is missing"})
+    return res.status(400).json({ error: "Password is missing"})
   }
   const saltRounds = 10
   const passwordHash = await bcrypt.hash(body.password, saltRounds)
