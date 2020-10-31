@@ -71,6 +71,78 @@ describe("testing backend blogs", () => {
   })
 })
 
+describe("Checks that invalid users are not created and returns suitable status code", () => {
+  test('username shorter then length 3 are not saved', async () => {
+    const preResponse = await api.get('/api/users')
+    var intitialLength = preResponse.body.length
+
+    const newUser = {
+      "username":"a",
+      "name": "skdl",
+      "password" : "123"
+    }
+
+    await api.post('/api/users')
+      .send(newUser)
+      .expect(400)
+
+    const postResponse = await api.get('/api/users')
+    expect(postResponse.body).toHaveLength(intitialLength)
+  })
+
+  test('missing username property arent saved and return bad req', async () => {
+    const preResponse = await api.get('/api/users')
+    var intitialLength = preResponse.body.length
+
+    const newUser = {
+      "name": "skdl",
+      "password" : "123"
+    }
+
+    await api.post('/api/users')
+      .send(newUser)
+      .expect(400)
+
+    const postResponse = await api.get('/api/users')
+    expect(postResponse.body).toHaveLength(intitialLength)
+  })
+
+  test('missing password property arent saved and return status 400', async () => {
+    const preResponse = await api.get('/api/users')
+    var intitialLength = preResponse.body.length
+
+    const newUser = {
+      "username": "sbhio",
+      "name": "skdl",
+    }
+
+    await api.post('/api/users')
+      .send(newUser)
+      .expect(400)
+
+    const postResponse = await api.get('/api/users')
+    expect(postResponse.body).toHaveLength(intitialLength)
+  })
+
+  test('PASSWORD shorter then length 3 are not saved', async () => {
+    const preResponse = await api.get('/api/users')
+    var intitialLength = preResponse.body.length
+
+    const newUser = {
+      "username": "sbhio",
+      "name": "skdl",
+      "password": "3"
+    }
+
+    await api.post('/api/users')
+      .send(newUser)
+      .expect(400)
+
+    const postResponse = await api.get('/api/users')
+    expect(postResponse.body).toHaveLength(intitialLength)
+  })
+})
+
 
 afterAll(() => {
   mongoose.connection.close()
