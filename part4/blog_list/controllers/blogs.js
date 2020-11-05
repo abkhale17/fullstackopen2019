@@ -23,14 +23,6 @@ Router.get('/:id', async (request, response, next) => {
 
 })
 
-const getTokenFrom = request => {
-  const authorization = request.get('authorization')
-  if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
-    return authorization.substring(7)
-  }
-  return null
-}
-
 Router.post('/', async (req, res, next) => {
   const body = req.body
   if(body.title === undefined || body.author === undefined) {
@@ -40,12 +32,11 @@ Router.post('/', async (req, res, next) => {
     body.likes = 0
   }
 
-  const token = getTokenFrom(req)
-  if(!token) {
+  if(!req.token) {
     return res.status(401).json({ error: 'token missing'})
   }
-  const decodedToken = jwt.verify(token, process.env.SECRET)
-  if (!token || !decodedToken.id) {
+  const decodedToken = jwt.verify(req.token, process.env.SECRET)
+  if (!req.token || !decodedToken.id) {
     return res.status(401).json({ error: 'token missing or invalid' })
   }
 
