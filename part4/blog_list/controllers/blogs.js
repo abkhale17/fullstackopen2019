@@ -55,12 +55,27 @@ Router.post('/', async (req, res, next) => {
   res.json(savedBlog)
 })
 
-Router.delete('/:id', (request, response, next) => {
-  Blog.findByIdAndRemove(request.params.id)
-    .then(() => {
-      response.status(204).end()
-    })
-    .catch(error => next(error))
+Router.delete('/:id', async (request, response, next) => {
+  if(!request.token) {
+    return response.status(401).json({ error: 'token missing'})
+  }
+  const decodedToken = jwt.verify(request.token, process.env.SECRET)
+
+  const blog = await Blog.findById(request.params.id)
+
+  if (!request.token || !decodedToken.id) {
+    return response.status(401).json({ error: 'token missing or invalid' })
+  }
+
+  if ( blog.user.toString() === decodedToken.id.toString() ) {
+    Blog.findByIdAndRemove(request.params.id)
+      .then(() => {
+        response.status(204).end()
+      })
+      .catch(error => next(error))
+  } else {
+    return response.status(401).json({ error: 'Token is not matching with Blog creator' })
+  } 
 })
 
 Router.put('/:id', (request, response, next) => {
