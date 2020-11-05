@@ -5,7 +5,7 @@ const app = require('../index')
 const api = supertest(app)
 
 describe("testing backend blogs", () => {
-  test('notes are returned as correct json format', async () => {
+  test('bogs are returned as correct json format', async () => {
     var response = await api.get('/api/blogs')
       .expect(200)
       .expect('Content-Type', /application\/json/)
@@ -37,6 +37,7 @@ describe("testing backend blogs", () => {
       }
     await api.post('/api/blogs')
       .send(newBlog)
+      .set('Authorization', 'bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFiaGlzaGVrIiwiaWQiOiI1ZjlkNmU4N2VhODI3NGE4NjYzN2Q4OGUiLCJpYXQiOjE2MDQxNTM2ODd9.Y2B3ed6F5CgEKT8tWXtiokaFshy-cm34PrKzy5g7_DA')
       .expect(200)
       .expect('Content-Type', /application\/json/)
 
@@ -53,6 +54,7 @@ describe("testing backend blogs", () => {
       }
     const response = await api.post('/api/blogs')
       .send(newBlog)
+      .set('Authorization', 'bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFiaGlzaGVrIiwiaWQiOiI1ZjlkNmU4N2VhODI3NGE4NjYzN2Q4OGUiLCJpYXQiOjE2MDQxNTM2ODd9.Y2B3ed6F5CgEKT8tWXtiokaFshy-cm34PrKzy5g7_DA')
       .expect(200)
       .expect('Content-Type', /application\/json/)
 
