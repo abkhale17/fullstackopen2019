@@ -1,3 +1,5 @@
-const error = (msg) => console.error(msg)
+const error = (msg) => console.error(msg,"----error Handler")
 
-module.exports = {error}
+const info = (msg) => console.log(msg)
+
+module.exports = { error, info }
