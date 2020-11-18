@@ -40,7 +40,7 @@ Router.post('/', async (req, res, next) => {
     return res.status(401).json({ error: 'token missing'})
   }
   const decodedToken = jwt.verify(req.token, process.env.SECRET)
-  console.log(decodedToken)
+
   if (!req.token || !decodedToken.id) {
     return res.status(401).json({ error: 'token missing or invalid' })
   }
@@ -55,6 +55,7 @@ Router.post('/', async (req, res, next) => {
     user: user.id
   })
   
+  blog.user = user
   const savedBlog = await blog.save()
   user.blogs = user.blogs.concat(savedBlog._id)
   await user.save()
@@ -88,13 +89,11 @@ Router.put('/:id', (request, response, next) => {
   const body = request.body
 
   const blog = {...body}
-  console.log(request.params.ids,"---in put body")
   Blog.findByIdAndUpdate(request.params.id, blog, { new: true })
     .then(updatedBlog => {
       response.json(updatedBlog)
     })
     .catch(error => {
-      console.log(error,"---in put err")
       next(error)
     })
 })
