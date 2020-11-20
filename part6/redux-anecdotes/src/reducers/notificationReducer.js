@@ -1,14 +1,14 @@
-export const notifyVote = (id) => {
+export const notifyVote = (content) => {
   return {
     type: 'UPVOTE',
-    data: { id }
+    data: { content }
   }
 }
 
-const notificationReducer = (state = 'HELLO', action) => {
+const notificationReducer = (state = '', action) => {
   switch(action.type) {
     case 'UPVOTE':
-      return `UPVOTE`
+      return `You voted ${action.data.content}`
     default:
       return state
   }
