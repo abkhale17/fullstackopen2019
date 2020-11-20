@@ -1,23 +1,24 @@
-export const notifyVote = (content) => {
+export const setNotification = (notification) => {
   return {
-    type: 'UPVOTE',
-    data: { content }
+    type: 'NOTIFY',
+    data: notification
   }
 }
 
-export const notifyAnecdote = (content) => {
+export const clearNotification =() => {
   return {
-    type: 'CREATE',
-    data: { content }
+    type: 'CLEAR'
   }
 }
 
-const notificationReducer = (state = '', action) => {
+const notificationReducer = (state = { message:'', display: 'none' }, action) => {
   switch(action.type) {
-    case 'UPVOTE':
-      return `You voted ${action.data.content}`
-    case 'CREATE':
-      return `You added ${action.data.content}`
+    case 'NOTIFY':
+      return { message: action.data, display: 'block'}
+
+    case 'CLEAR':
+      return { message:'', display: 'none' }
+
     default:
       return state
   }
