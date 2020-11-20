@@ -13,6 +13,6 @@ const createAnecdote = async (content) => {
 }
 
 const update = async (anecdote) => {
-  const request = await axios.put(`${baseUrl}/${anecdote.id}`, anecdote)
+  await axios.put(`${baseUrl}/${anecdote.id}`, anecdote)
 }
 export default { getAll, createAnecdote, update }
