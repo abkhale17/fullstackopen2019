@@ -1,8 +1,15 @@
+var idArrs = []
 export const setNotification = (notification, time) => {
+  var timeOutId
   return async dispatch => {
-    setTimeout(() => {
+    timeOutId = window.setTimeout(() => {
       dispatch(clearNotification())
     }, time*1000)
+    idArrs.push(timeOutId)
+    if(idArrs.length > 1) {
+      window.clearTimeout(idArrs.shift())
+    }
+    
     dispatch({
       type: 'NOTIFY',
       data: notification
