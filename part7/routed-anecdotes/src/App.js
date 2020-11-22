@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import { 
-  BrowserRouter as Router , 
-  Link, Route, Switch 
+  Link, Route, Switch,
+  useParams,
+  useRouteMatch
 } from 'react-router-dom'
 
 const Menu = () => {
@@ -17,11 +18,28 @@ const Menu = () => {
   )
 }
 
+const Anecdote = ({ anecdote }) => {
+  return (
+    <div>
+      <h2>{anecdote.content}</h2>
+      <p>{anecdote.author}</p>
+      <p>{anecdote.info}</p>
+      <p>{anecdote.votes}</p>
+    </div>
+  )
+}
+
 const AnecdoteList = ({ anecdotes }) => (
   <div>
     <h2>Anecdotes</h2>
     <ul>
-      {anecdotes.map(anecdote => <li key={anecdote.id} >{anecdote.content}</li>)}
+      {
+        anecdotes.map(anecdote => 
+          <li key={anecdote.id}>
+            <Link to={`/anecdotes/${anecdote.id}`} >{anecdote.content}</Link>
+          </li>
+        )
+      }
     </ul>
   </div>
 )
@@ -94,14 +112,14 @@ const App = () => {
       author: 'Jez Humble',
       info: 'https://martinfowler.com/bliki/FrequencyReducesDifficulty.html',
       votes: 0,
-      id: '1'
+      id: 1
     },
     {
       content: 'Premature optimization is the root of all evil',
       author: 'Donald Knuth',
       info: 'http://wiki.c2.com/?PrematureOptimization',
       votes: 0,
-      id: '2'
+      id: 2
     }
   ])
 
@@ -126,12 +144,20 @@ const App = () => {
     setAnecdotes(anecdotes.map(a => a.id === id ? voted : a))
   }
 
+  const match = useRouteMatch('/anecdotes/:id')
+  const clickedAnecdote = match 
+    ? anecdotes.find((anecdote) => anecdote.id === Number(match.params.id))
+    : null
+
   return (
-    <Router>
+    <div>
       <div>
         <h1>Software anecdotes</h1>
         <Menu/>
         <Switch>
+          <Route exact path='/anecdotes/:id'>
+            <Anecdote anecdote={clickedAnecdote}/>
+          </Route>
           <Route exact path='/anecdotes'>
             <AnecdoteList anecdotes={anecdotes} />
           </Route>
@@ -144,7 +170,7 @@ const App = () => {
         </Switch>
       </div>
       <Footer />
-    </Router>
+    </div>
   )
 }
 
