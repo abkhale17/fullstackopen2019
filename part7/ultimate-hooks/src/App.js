@@ -20,10 +20,19 @@ const useField = (type) => {
 const useResource = (baseUrl) => {
   const [resources, setResources] = useState([])
 
-  // ...
+  useEffect(() => {
+    axios.get(baseUrl)
+    .then(res => setResources(res.data))
+  }, [baseUrl])
 
   const create = (resource) => {
-    // ...
+    if(resource.content) {
+      axios.post('http://localhost:3005/notes', resource)
+      .then(res => setResources(resources.concat(res.data)))
+    } else {
+      axios.post('http://localhost:3005/persons', resource)
+      .then(res => setResources(resources.concat(res.data)))
+    }
   }
 
   const service = {
