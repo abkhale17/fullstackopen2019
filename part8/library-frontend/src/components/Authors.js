@@ -4,7 +4,7 @@ import { useMutation, useQuery } from '@apollo/client';
 import { ALL_AUTHORS, UPDATE_BORN } from '../queries'
 
 const Authors = (props) => {
-  const [name, setName] = useState('')
+  var name
   const [born, setBorn] = useState('')
 
   const [ editBorn ] = useMutation(UPDATE_BORN, {
@@ -23,9 +23,14 @@ const Authors = (props) => {
 
   const submit = (e) => {
     e.preventDefault()
-
+    var selection = document.getElementById('selectAuthor')
+    for(let i=0; i<selection.length; i++){
+      if(selection[i].selected) {
+        name = selection[i].value
+      }
+    }
     editBorn({ variables: { name, born } })
-    setName('')
+    name = ''
     setBorn('')
   }
 
@@ -56,12 +61,18 @@ const Authors = (props) => {
         <h2>Set Birth Year</h2>
         <form onSubmit={submit}>
           <div>
-            name
-            <input type='text' onChange={({ target }) => setName(target.value)}/>
+            Choose Author
+            <select id='selectAuthor'>
+              {
+                authors.map((author, idx) => 
+                  <option key={idx} value={author.name}>{author.name}</option>
+                )
+              }
+            </select>
           </div>
           <div>
             born
-            <input type='number' onChange={({ target }) => setBorn(parseInt(target.value))}/>
+            <input type='number' value={born} onChange={({ target }) => setBorn(parseInt(target.value))}/>
           </div>
           <button type='submit'>Update</button>
         </form>
