@@ -1,4 +1,4 @@
-const { ApolloServer, gql } = require('apollo-server')
+const { ApolloServer, gql, UserInputError, AuthenticationError } = require('apollo-server')
 
 const mongoose = require('mongoose')
 
@@ -91,22 +91,42 @@ const resolvers = {
       if(!isNewAuthor) {
         const newAuthor = new Author({ name: args.author, bookCount: 1 })
         const book = new Book({ ...args, author: newAuthor._id})
-        await newAuthor.save()
-        return await book.save()
+        try {
+          await newAuthor.save()
+          await book.save()
+          return book
+        } catch(error) {
+          throw new UserInputError(error.message, {
+            invalidArgs: args,
+          })
+        }
       } else {
-        const existingAuthor = isNewAuthor.toJSON()
-        const book = new Book({ ...args, author: existingAuthor._id })
-        return await book.save()
+        try {
+          const existingAuthor = isNewAuthor.toJSON()
+          const book = new Book({ ...args, author: existingAuthor._id })
+          await book.save()
+          return book
+        } catch(error) {
+          throw new UserInputError(error.message, {
+            invalidArgs: args,
+          })
+        }
       }
     },
     editAuthor: async (root, args) => {
-      const matchAuthor = await Author.findOne({ name: args.name })
-      if(!matchAuthor) {
-        return null
+      try {
+        const matchAuthor = await Author.findOne({ name: args.name })
+        if(!matchAuthor) {
+          return null
+        }
+        const updatedAuthor = { ...matchAuthor.toJSON(), born: args.setBornTo }
+        await Author.findByIdAndUpdate(updatedAuthor._id, updatedAuthor, { new: true })
+        return updatedAuthor
+      } catch(error) {
+        throw new UserInputError(error.message, {
+          invalidArgs: args,
+        })
       }
-      const updatedAuthor = { ...matchAuthor.toJSON(), born: args.setBornTo }
-      const res = await Author.findByIdAndUpdate(updatedAuthor._id, updatedAuthor, { new: true })
-      return res.toJSON()
     }
   }
 }
