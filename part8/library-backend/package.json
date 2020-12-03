@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node librayBackend.js",
+    "gql": "nodemon librayBackend.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -13,6 +15,7 @@
     "graphql": "^15.4.0",
     "mongoose": "^5.11.2",
     "mongoose-unique-validator": "^2.0.3",
+    "nodemon": "^2.0.6",
     "uuid": "^8.3.1"
   }
 }
