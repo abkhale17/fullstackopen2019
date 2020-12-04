@@ -29,6 +29,7 @@ const typeDefs = gql`
 
   type Token {
     value: String!
+    fgenre: String!
   }
 
   type Book {
@@ -182,7 +183,7 @@ const resolvers = {
         id: user._id,
       }
 
-      return { value: jwt.sign(userForToken, JWT_SECRET) }
+      return { value: jwt.sign(userForToken, JWT_SECRET), fgenre: user.favoriteGenre }
     }
   }
 }
