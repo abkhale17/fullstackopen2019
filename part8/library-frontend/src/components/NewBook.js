@@ -17,9 +17,8 @@ const NewBook = (props) => {
       { 
         query: ALL_AUTHORS 
       } 
-    ], 
-    onError: (error) => 
-      console.log(error) 
+    ],
+    onError: (error) => console.log(error) 
   })
 
   if (!props.show) {

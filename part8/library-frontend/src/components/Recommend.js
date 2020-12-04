@@ -10,7 +10,6 @@ const Recommend = ({ show }) => {
   useEffect(() => {
     filterBooks({ variables: { genre: favoriteGenre } })
     if(results.data) {
-      console.log(4)
       setBookLists(results.data.allBooks)
     }
   }, [results.data, favoriteGenre, filterBooks])
