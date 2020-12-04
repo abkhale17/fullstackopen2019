@@ -133,7 +133,7 @@ const resolvers = {
           const existingAuthor = isNewAuthor.toJSON()
           const book = new Book({ ...args, author: existingAuthor._id })
           await book.save()
-          return book
+          return { ...book, author: { name: args.author }}
         } catch(error) {
           throw new UserInputError(error.message, {
             invalidArgs: args,

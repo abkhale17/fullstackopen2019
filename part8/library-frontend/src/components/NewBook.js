@@ -19,7 +19,7 @@ const NewBook = (props) => {
       } 
     ], 
     onError: (error) => 
-      console.log(error.graphQLErrors[0].message) 
+      console.log(error) 
   })
 
   if (!props.show) {
