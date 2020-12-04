@@ -48,7 +48,6 @@ const App = () => {
       <Books
         show={page === 'books'}
       />
-      {console.log({token, page})}
 
       <NewBook
         show={page === 'add'}
