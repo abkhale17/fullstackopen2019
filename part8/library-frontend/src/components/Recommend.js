@@ -3,29 +3,21 @@ import { useLazyQuery } from '@apollo/client'
 import { ALL_BOOKS } from '../queries'
 
 const Recommend = ({ show }) => {
-  console.log('recommend')
   const [bookLists, setBookLists] = useState(null)
-  console.log(1)
   const [filterBooks, results] = useLazyQuery(ALL_BOOKS)
-  console.log(2)
   const favoriteGenre = localStorage.getItem('favGenre')
-  // filterBooks({ variables: { genre: favoriteGenre } })
-  console.log(3)
 
   useEffect(() => {
-    console.log('useeffect')
     filterBooks({ variables: { genre: favoriteGenre } })
     if(results.data) {
       console.log(4)
       setBookLists(results.data.allBooks)
     }
   }, [results.data, favoriteGenre, filterBooks])
-  console.log(5)
+
   if (!show) {
     return null
   }
-  console.log('render')
-  // const genresList = books.filter(book => book.genres.includes(favoriteGenre))
 
   return (
     <div>
