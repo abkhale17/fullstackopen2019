@@ -109,8 +109,13 @@ const resolvers = {
     me: (root, args, context) => context.currentUser,
   },
   Mutation: {
-    addBook: async (root, args) => {
+    addBook: async (root, args, context) => {
+      const currentUser = context.currentUser
+      if(!currentUser) {
+        throw new AuthenticationError('not authenticated')
+      }
       const isNewAuthor = await Author.findOne({ name: args.author })
+
       if(!isNewAuthor) {
         const newAuthor = new Author({ name: args.author, bookCount: 1 })
         const book = new Book({ ...args, author: newAuthor._id})
@@ -136,7 +141,11 @@ const resolvers = {
         }
       }
     },
-    editAuthor: async (root, args) => {
+    editAuthor: async (root, args, context) => {
+      const currentUser = context.currentUser
+      if(!currentUser) {
+        throw new AuthenticationError('not authenticated')
+      }
       try {
         const matchAuthor = await Author.findOne({ name: args.name })
         if(!matchAuthor) {
