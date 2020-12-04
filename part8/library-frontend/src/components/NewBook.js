@@ -28,7 +28,8 @@ const NewBook = (props) => {
 
   const submit = async (event) => {
     event.preventDefault()
-    
+    //TODO : remove BUG => Error: Cannot return null for non-nullable field Author.name after adding book
+    //TODO : Render books tab: refetchqueries are not updating view. should update cache 
     createBook({ variables: { title, published, author, genres }})
 
     setTitle('')

@@ -59,6 +59,7 @@ export const LOGIN = gql`
       password: $password
     ) {
       value
+      fgenre
     }
   }
 `

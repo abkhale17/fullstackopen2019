@@ -14,9 +14,12 @@ const LoginForm = ({ show, setToken }) => {
 
   useEffect(() => {
     if(result.data) {
-      const token = result.data.login.value
+      const res = result.data.login
+      const token = res.value
+      const fgenre = res.fgenre
       setToken(token)
       localStorage.setItem('user-token', token)
+      localStorage.setItem('favGenre', fgenre)
     }
   }, [result.data])
 
