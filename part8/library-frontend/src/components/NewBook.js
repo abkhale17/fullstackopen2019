@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useMutation } from '@apollo/client'
-import { ADD_BOOK, ALL_AUTHORS, ALL_BOOKS } from '../queries'
+import { ADD_BOOK, ALL_BOOKS } from '../queries'
 
 const NewBook = (props) => {
   const [title, setTitle] = useState('')
@@ -10,15 +10,17 @@ const NewBook = (props) => {
   const [genres, setGenres] = useState([])
 
   const [ createBook ] = useMutation(ADD_BOOK, { 
-    refetchQueries: [ 
-      { 
-        query: ALL_BOOKS 
-      }, 
-      { 
-        query: ALL_AUTHORS 
-      } 
-    ],
-    onError: (error) => console.log(error) 
+    onError: (error) => console.log(error),
+    update: (store, response) => {
+      const dataInStore = store.readQuery( { query: ALL_BOOKS } )
+      store.writeQuery({
+        query: ALL_BOOKS,
+        data: {
+          ...dataInStore,
+          allBooks: [ ...dataInStore.allBooks, response.data.addBook ]
+        }
+      })
+    }
   })
 
   if (!props.show) {
@@ -27,8 +29,6 @@ const NewBook = (props) => {
 
   const submit = async (event) => {
     event.preventDefault()
-    //TODO : remove BUG => Error: Cannot return null for non-nullable field Author.name after adding book
-    //TODO : Render books tab: refetchqueries are not updating view. should update cache 
     createBook({ variables: { title, published, author, genres }})
 
     setTitle('')
