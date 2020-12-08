@@ -1,9 +1,9 @@
   
 import React, { useState } from 'react'
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { ALL_AUTHORS, UPDATE_BORN } from '../queries'
 
-const Authors = (props) => {
+const Authors = ({ show, token, authors }) => {
   var name
   const [born, setBorn] = useState('')
 
@@ -12,14 +12,9 @@ const Authors = (props) => {
     onError: (error) => { console.log(error) }
   })
 
-  const result = useQuery(ALL_AUTHORS)
-  if (!props.show) {
+  if (!show) {
     return null
   }
-  if(result.loading) {
-    return <div>...Loading!</div>
-  }
-  const authors = result.data.allAuthors
 
   const submit = (e) => {
     e.preventDefault()
@@ -60,7 +55,7 @@ const Authors = (props) => {
       <div>
         <h2>Set Birth Year</h2>
         {
-          props.token
+          token
           ? <form onSubmit={submit}>
               <div>
                 Choose Author
