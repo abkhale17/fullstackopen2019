@@ -121,14 +121,14 @@ const resolvers = {
   Mutation: {
     addBook: async (root, args, context) => {
       const currentUser = context.currentUser
+      const book = new Book({ ...args })
       if(!currentUser) {
         throw new AuthenticationError('not authenticated')
       }
       const isNewAuthor = await Author.findOne({ name: args.author })
-
       if(!isNewAuthor) {
-        const newAuthor = new Author({ name: args.author, bookCount: 1 })
-        const book = new Book({ ...args, author: newAuthor._id})
+        const newAuthor = new Author({ name: args.author })
+        book.author = newAuthor._id
         try {
           await newAuthor.save()
           await book.save()
@@ -137,10 +137,9 @@ const resolvers = {
             invalidArgs: args,
           })
         }
-      } else {
+      } else {        
         try {
-          const existingAuthor = isNewAuthor.toJSON()
-          const book = new Book({ ...args, author: existingAuthor._id })
+          book.author = isNewAuthor._id
           await book.save()
         } catch(error) {
           throw new UserInputError(error.message, {
