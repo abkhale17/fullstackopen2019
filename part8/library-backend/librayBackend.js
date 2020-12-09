@@ -44,6 +44,7 @@ const typeDefs = gql`
     name: String!
     born: Int
     bookCount: Int
+    books: [Book!]!
     id: ID!
   }
 
@@ -104,7 +105,8 @@ const resolvers = {
     },
     allAuthors: async () => {
       //TODO: books:[objectId] ids of books written byt THIS author instead of bookCount
-      return await Author.find({})
+      const results = await Author.find({}).populate('books')
+      return results
     },
     me: (root, args, context) => context.currentUser,
   },
@@ -116,6 +118,14 @@ const resolvers = {
         }
       })
       return books.length
+    },
+    books: async (root) => {
+      const books = await Book.find({
+        author: {
+          $in: [root._id]
+        }
+      })
+      return books
     }
   },
   Mutation: {
@@ -128,6 +138,7 @@ const resolvers = {
       const isNewAuthor = await Author.findOne({ name: args.author })
       if(!isNewAuthor) {
         const newAuthor = new Author({ name: args.author })
+        newAuthor.books = newAuthor.books.concat(book._id)
         book.author = newAuthor._id
         try {
           await newAuthor.save()
@@ -137,7 +148,8 @@ const resolvers = {
             invalidArgs: args,
           })
         }
-      } else {        
+      } else {  
+        isNewAuthor.books = isNewAuthor.books.concat(book._id)
         try {
           book.author = isNewAuthor._id
           await book.save()

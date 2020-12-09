@@ -14,6 +14,12 @@ const schema = new mongoose.Schema({
     type: Number,
     ref: 'Book'
   },
+  books: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Book'
+    }
+  ]
 })
 
 schema.set('toJSON', {
