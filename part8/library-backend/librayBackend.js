@@ -103,17 +103,20 @@ const resolvers = {
       return await Book.find({}).populate('author')
     },
     allAuthors: async () => {
-      //TODO: To write concese code
       //TODO: books:[objectId] ids of books written byt THIS author instead of bookCount
-      let authors = await Author.find({})
-      const books = await Book.find({}).populate('author')
-      authors =  authors.map(author => {
-        let booksByAuthor = books.filter(book => book.author.name === author.name)
-        return { ...author.toJSON(), bookCount: booksByAuthor.length }
-      })
-      return authors
+      return await Author.find({})
     },
     me: (root, args, context) => context.currentUser,
+  },
+  Author: {
+    bookCount: async (root) => {
+      const books = await Book.find({
+        author: {
+          $in: [root._id]
+        }
+      })
+      return books.length
+    }
   },
   Mutation: {
     addBook: async (root, args, context) => {

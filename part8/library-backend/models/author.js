@@ -12,6 +12,7 @@ const schema = new mongoose.Schema({
   },
   bookCount: {
     type: Number,
+    ref: 'Book'
   },
 })
 
