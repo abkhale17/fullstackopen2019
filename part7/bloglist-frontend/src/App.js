@@ -8,7 +8,7 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import storage from './utils/storage'
 import { useDispatch } from 'react-redux'
-import { setNotification, clearNotification } from './reducers/notificationReducer'
+import { setNotification } from './reducers/notificationReducer'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -33,10 +33,6 @@ const App = () => {
     dispatch(setNotification({
       message, type
     }, 5))
-
-    setTimeout(() => {
-      dispatch(clearNotification())
-    }, 5000)
   }
 
   const handleLogin = async (event) => {
@@ -81,6 +77,7 @@ const App = () => {
     if (ok) {
       await blogService.remove(id)
       setBlogs(blogs.filter(b => b.id !== id))
+      notifyWith(`You deleted ${blogToRemove.title}`)
     }
   }
 
