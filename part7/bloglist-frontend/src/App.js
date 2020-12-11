@@ -1,8 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react'
+import {
+  BrowserRouter as Router,
+  Switch, Route, Link
+} from "react-router-dom"
 import Blog from './components/Blog'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import NewBlog from './components/NewBlog'
+import User from './components/User'
 
 import { initializeBlogs } from './reducers/blogsReducer'
 import loginService from './services/login'
@@ -11,9 +16,11 @@ import { useSelector, useDispatch } from 'react-redux'
 import { likeBlog, removeBlog } from './reducers/blogsReducer'
 import { setNotification } from './reducers/notificationReducer'
 import { loggedUser, logout } from './reducers/userReducer'
+import { initializeUserList } from './reducers/userListReducers'
 
 const App = () => {
   const blogs = useSelector(state => state.blogs)
+  const userList = useSelector(state => state.userList)
   const user = useSelector(state => state.user)
   const dispatch = useDispatch()
   const [username, setUsername] = useState('')
@@ -22,6 +29,10 @@ const App = () => {
 
   useEffect(() => {
     dispatch(initializeBlogs())
+  }, [dispatch])
+
+  useEffect(() => {
+    dispatch(initializeUserList())
   }, [dispatch])
 
   useEffect(() => {
@@ -105,29 +116,52 @@ const App = () => {
   const byLikes = (b1, b2) => b2.likes - b1.likes
 
   return (
-    <div>
-      <h2>blogs</h2>
+    <Router>
+      <div>
+        <h2>blogs</h2>
 
-      <Notification />
+        <Notification />
 
-      <p>
-        {user.name} logged in <button onClick={handleLogout}>logout</button>
-      </p>
+        <p>
+          {user.name} logged in <button onClick={handleLogout}>logout</button>
+        </p>
 
-      <Togglable buttonLabel='create new blog' ref={blogFormRef}>
-        <NewBlog blogFormRef={blogFormRef}/>
-      </Togglable>
+        <Switch>
+          <Route exact path='/'>
+            
+            <Togglable buttonLabel='create new blog' ref={blogFormRef}>
+              <NewBlog blogFormRef={blogFormRef}/>
+            </Togglable>
 
-      {blogs.sort(byLikes).map(blog =>
-        <Blog
-          key={blog.id}
-          blog={blog}
-          handleLike={handleLike}
-          handleRemove={handleRemove}
-          own={user.username === blog.user.username}
-        />
-      )}
-    </div>
+            {blogs.sort(byLikes).map(blog =>
+              <Blog
+                key={blog.id}
+                blog={blog}
+                handleLike={handleLike}
+                handleRemove={handleRemove}
+                own={user.username === blog.user.username}
+              />
+            )}
+          </Route>
+          <Route exact path='/users'>
+            <table>
+              <tbody>
+                <tr>
+                  <th>Name</th>
+                  <th>Blogs Created</th>
+                </tr>
+                {userList.map((user, idx) => 
+                  <User
+                    key={idx}
+                    user={user}
+                  />
+                )}
+              </tbody>
+            </table>
+          </Route>
+        </Switch>
+      </div>
+    </Router>
   )
 }
 
