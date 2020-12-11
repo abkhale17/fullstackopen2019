@@ -23,6 +23,10 @@ const BlogView = ({ blog, handleLike, handleRemove, own }) => {
       <p>Added by {blog.user.name}</p>
       <a href='https://www.wikipedia.org/'>{blog.url}</a>
       {own&&<button onClick={() => handleRemove(blog.id)} style={removeBtn}>remove</button>}
+      <h4>Comments:</h4>
+      {
+        blog.comments.map((comment,idx) => <li key={idx}>{comment}</li>)
+      }
 
     </div>
   )
