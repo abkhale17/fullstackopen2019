@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import {
   useRouteMatch,
   Switch, Route,
@@ -10,7 +10,6 @@ import NewBlog from './components/NewBlog'
 import User from './components/User'
 
 import { initializeBlogs } from './reducers/blogsReducer'
-import loginService from './services/login'
 import storage from './utils/storage'
 import { useSelector, useDispatch } from 'react-redux'
 import { likeBlog, removeBlog } from './reducers/blogsReducer'
@@ -20,6 +19,7 @@ import { initializeUserList } from './reducers/userListReducers'
 import UserBlog from './components/UserBlogs'
 import BlogView from './components/BlogView'
 import Menu from './components/Menu'
+import LoginForm from './components/LoginForm'
 
 const App = () => {
   const blogs = useSelector(state => state.blogs)
@@ -28,8 +28,7 @@ const App = () => {
   const matchUser = useRouteMatch('/users/:id')
   const matchBlog = useRouteMatch('/blogs/:id')
   const dispatch = useDispatch()
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
+
   const blogFormRef = useRef()
 
   useEffect(() => {
@@ -49,23 +48,6 @@ const App = () => {
     dispatch(setNotification({
       message, type
     }, 5))
-  }
-
-  const handleLogin = async (event) => {
-    event.preventDefault()
-    try {
-      const user = await loginService.login({
-        username, password
-      })
-
-      setUsername('')
-      setPassword('')
-      dispatch(loggedUser(user))
-      notifyWith(`${user.name} welcome back!`)
-      storage.saveUser(user)
-    } catch (exception) {
-      notifyWith('wrong username/password', 'error')
-    }
   }
 
   const handleLike = async (id) => {
@@ -90,31 +72,7 @@ const App = () => {
 
   if (!user) {
     return (
-      <div>
-        <h2>login to application</h2>
-
-        <Notification />
-
-        <form onSubmit={handleLogin}>
-          <div>
-            username
-            <input
-              id='username'
-              value={username}
-              onChange={({ target }) => setUsername(target.value)}
-            />
-          </div>
-          <div>
-            password
-            <input
-              id='password'
-              value={password}
-              onChange={({ target }) => setPassword(target.value)}
-            />
-          </div>
-          <button id='login'>login</button>
-        </form>
-      </div>
+      <LoginForm notifyWith={notifyWith}/>   
     )
   }
 

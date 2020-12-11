@@ -32,7 +32,6 @@ const remove = (id) => {
 const commentToBlog = (blog) => {
   const request = axios.put(`${baseUrl}/${blog.id}/comments`, blog)
   return request.then(response => {
-    console.log(response.data,'----commment data')
     return response.data
   })
 }

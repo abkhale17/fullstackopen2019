@@ -3,7 +3,6 @@ import userService from '../services/users'
 const reducer = (state = [], action) => {
   switch(action.type) {
     case 'ALL_USERS':
-      console.log(action.data,'action.data')
       return action.data
     default:
       return state
