@@ -173,6 +173,7 @@ const App = () => {
             blog={matchedBlog}
             handleLike={handleLike}
             handleRemove={handleRemove}
+            notifyWith={notifyWith}
             own={ matchedBlog ? user.username === matchedBlog.user.username : false  }
           />
         </Route>

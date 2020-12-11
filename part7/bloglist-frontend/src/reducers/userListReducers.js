@@ -13,7 +13,6 @@ const reducer = (state = [], action) => {
 export const initializeUserList = () => {
   return async dispatch => {
     const data = await userService.getAll()
-    console.log(data,'data')
     dispatch({
       type: 'ALL_USERS',
       data
