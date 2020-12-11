@@ -1,8 +1,10 @@
-import React, { useState } from 'react'
+import React from 'react'
+import { Link } from 'react-router-dom'
 
-const Blog = ({ blog, handleLike, handleRemove, own }) => {
-  const [visible, setVisible] = useState(false)
-
+const Blog = ({ blog }) => {
+  if(!blog) {
+    return null
+  }
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -11,33 +13,11 @@ const Blog = ({ blog, handleLike, handleRemove, own }) => {
     marginBottom: 5
   }
 
-  const likeBtn = {
-    background:'#8080ff', 
-    color: '#fff',
-  }
-
-  const removeBtn = {
-    background:'#cc5656',
-    color:'#fff',
-  }
-
-  const label = visible ? 'hide' : 'view'
-
   return (
     <div style={blogStyle} className='blog'>
       <div>
-        <i>{blog.title}</i> by {blog.author} <button onClick={() => setVisible(!visible)}>{label}</button>
+        <Link to={`/blogs/${blog.id}`}>{blog.title}</Link> by {blog.author}
       </div>
-      {visible&&(
-        <div>
-          <div>{blog.url}</div>
-          <div>likes {blog.likes}
-            <button onClick={() => handleLike(blog.id)} style={likeBtn}>like</button>
-          </div>
-          <div>{blog.user.name}</div>
-          {own&&<button onClick={() => handleRemove(blog.id)} style={removeBtn}>remove</button>}
-        </div>
-      )}
     </div>
   )
 }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import {
   useRouteMatch,
-  Switch, Route, Link
+  Switch, Route,
 } from "react-router-dom"
 import Blog from './components/Blog'
 import Notification from './components/Notification'
@@ -18,12 +18,14 @@ import { setNotification } from './reducers/notificationReducer'
 import { loggedUser, logout } from './reducers/userReducer'
 import { initializeUserList } from './reducers/userListReducers'
 import UserBlog from './components/UserBlogs'
+import BlogView from './components/BlogView'
 
 const App = () => {
   const blogs = useSelector(state => state.blogs)
   const userList = useSelector(state => state.userList)
   const user = useSelector(state => state.user)
-  const match = useRouteMatch('/users/:id')
+  const matchUser = useRouteMatch('/users/:id')
+  const matchBlog = useRouteMatch('/blogs/:id')
   const dispatch = useDispatch()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -117,8 +119,10 @@ const App = () => {
 
   const byLikes = (b1, b2) => b2.likes - b1.likes
 
-  const matchedUser = match ? userList.find(user => user._id === match.params.id) : null
+  const matchedUser = matchUser ? userList.find(user => user._id === matchUser.params.id) : null
+  const matchedBlog = matchBlog ? blogs.find(blog => blog.id === matchBlog.params.id) : null
   console.log(matchedUser,'matchUser')
+  console.log(matchedBlog,'matchBlog')
   return (  
     <div>
       <h2>blogs</h2>
@@ -140,9 +144,6 @@ const App = () => {
             <Blog
               key={blog.id}
               blog={blog}
-              handleLike={handleLike}
-              handleRemove={handleRemove}
-              own={user.username === blog.user.username}
             />
           )}
         </Route>
@@ -164,6 +165,14 @@ const App = () => {
         </Route>
         <Route exact path='/users/:id'>
           <UserBlog matchedUser={matchedUser}/>
+        </Route>
+        <Route exact path='/blogs/:id'>
+          <BlogView 
+            blog={matchedBlog}
+            handleLike={handleLike}
+            handleRemove={handleRemove}
+            own={ matchedBlog ? user.username === matchedBlog.user.username : false  }
+          />
         </Route>
       </Switch>
     </div>
