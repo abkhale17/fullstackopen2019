@@ -32,4 +32,18 @@ router.post('/', async (request, response) => {
   response.json(savedUser)
 })
 
+router.get('/:id', async (request, response, next) => {
+  const user = await User.findById(request.params.id)
+
+  try {
+    if (user) {
+      response.json(user)
+    } else {
+      response.status(404).end()
+    }
+  } catch(error) {
+    next(error)
+  }
+})
+
 module.exports = router
