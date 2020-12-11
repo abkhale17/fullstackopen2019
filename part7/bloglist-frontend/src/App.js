@@ -19,6 +19,7 @@ import { loggedUser, logout } from './reducers/userReducer'
 import { initializeUserList } from './reducers/userListReducers'
 import UserBlog from './components/UserBlogs'
 import BlogView from './components/BlogView'
+import Menu from './components/Menu'
 
 const App = () => {
   const blogs = useSelector(state => state.blogs)
@@ -121,17 +122,15 @@ const App = () => {
 
   const matchedUser = matchUser ? userList.find(user => user._id === matchUser.params.id) : null
   const matchedBlog = matchBlog ? blogs.find(blog => blog.id === matchBlog.params.id) : null
-  console.log(matchedUser,'matchUser')
-  console.log(matchedBlog,'matchBlog')
+
   return (  
     <div>
-      <h2>blogs</h2>
-
+      <Menu 
+        user={user} 
+        handleLogout={handleLogout}
+      />
+      
       <Notification />
-
-      <p>
-        {user.name} logged in <button onClick={handleLogout}>logout</button>
-      </p>
 
       <Switch>
         <Route exact path='/'>
@@ -139,6 +138,8 @@ const App = () => {
           <Togglable buttonLabel='create new blog' ref={blogFormRef}>
             <NewBlog blogFormRef={blogFormRef}/>
           </Togglable>
+
+          <h2>blogs</h2>
 
           {blogs.sort(byLikes).map(blog =>
             <Blog
@@ -148,6 +149,7 @@ const App = () => {
           )}
         </Route>
         <Route exact path='/users'>
+          <h2>Users</h2>
           <table>
             <tbody>
               <tr>
