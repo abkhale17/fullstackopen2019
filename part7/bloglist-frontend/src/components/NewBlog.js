@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { createBlog } from '../reducers/blogsReducer'
 import { setNotification } from '../reducers/notificationReducer'
+import Button from '@material-ui/core/Button';
 
 const NewBlog = ({ blogFormRef }) => {
   const [title, setTitle] = useState('')
@@ -59,7 +60,7 @@ const NewBlog = ({ blogFormRef }) => {
             onChange={({ target }) => setUrl(target.value)}
           />
         </div>
-        <button id="create">create</button>
+        <Button id="create">create</Button>
       </form>
     </div>
   )

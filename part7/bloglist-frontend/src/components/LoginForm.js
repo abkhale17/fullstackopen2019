@@ -4,6 +4,7 @@ import { loggedUser } from '../reducers/userReducer'
 import storage from '../utils/storage'
 import Notification from './Notification'
 import loginService from '../services/login'
+import { Button, TextField, Container } from '@material-ui/core'
 
 const LoginForm = ({ notifyWith }) => {
   const [username, setUsername] = useState('')
@@ -28,31 +29,40 @@ const LoginForm = ({ notifyWith }) => {
   }
 
   return (
-    <div>
-        <h2>login to application</h2>
+    <Container>
+      <div>
+          <h2>login to application</h2>
 
-        <Notification />
+          <Notification />
 
-        <form onSubmit={handleLogin}>
-          <div>
-            username
-            <input
-              id='username'
-              value={username}
-              onChange={({ target }) => setUsername(target.value)}
-            />
-          </div>
-          <div>
-            password
-            <input
-              id='password'
-              value={password}
-              onChange={({ target }) => setPassword(target.value)}
-            />
-          </div>
-          <button id='login'>login</button>
-        </form>
-      </div>
+          <form onSubmit={handleLogin}>
+            <div>
+              <TextField 
+                label='username'
+                variant="outlined"
+                value={username}
+                onChange={({ target }) => setUsername(target.value)}
+              />
+            </div>
+            <br/>
+            <div>
+              <TextField
+                label='password'
+                variant="outlined"
+                type='password'
+                value={password}
+                onChange={({ target }) => setPassword(target.value)}
+              />
+            </div>
+            <br/>
+            <div>
+              <Button variant="contained" color="primary" type="submit">
+                login
+              </Button>
+            </div>
+          </form>
+        </div>
+      </Container>
   )
 }
 

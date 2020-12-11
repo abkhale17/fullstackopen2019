@@ -21,6 +21,20 @@ import BlogView from './components/BlogView'
 import Menu from './components/Menu'
 import LoginForm from './components/LoginForm'
 
+//@material/core imports
+import {
+  Container,
+  Table,
+  TableBody,
+  TableContainer,
+  Paper,
+  TableRow,
+  TableCell,
+} from '@material-ui/core'
+
+import { createMuiTheme } from '@material-ui/core/styles';
+import { ThemeProvider } from '@material-ui/styles';
+
 const App = () => {
   const blogs = useSelector(state => state.blogs)
   const userList = useSelector(state => state.userList)
@@ -43,6 +57,18 @@ const App = () => {
     const user = storage.loadUser()
     dispatch(loggedUser(user))
   }, [dispatch])
+
+  const lightTheme = createMuiTheme({
+    palette: {
+      type: 'light',
+      primary: {
+        main: '#ff5722',
+      },
+      secondary: {
+        main: '#6200ea',
+      },
+    },
+  });
 
   const notifyWith = (message, type = 'success') => {
     dispatch(setNotification({
@@ -81,62 +107,74 @@ const App = () => {
   const matchedUser = matchUser ? userList.find(user => user._id === matchUser.params.id) : null
   const matchedBlog = matchBlog ? blogs.find(blog => blog.id === matchBlog.params.id) : null
 
-  return (  
-    <div>
-      <Menu 
-        user={user} 
-        handleLogout={handleLogout}
-      />
-      
-      <Notification />
-
-      <Switch>
-        <Route exact path='/'>
-
-          <Togglable buttonLabel='create new blog' ref={blogFormRef}>
-            <NewBlog blogFormRef={blogFormRef}/>
-          </Togglable>
-
-          <h2>blogs</h2>
-
-          {blogs.sort(byLikes).map(blog =>
-            <Blog
-              key={blog.id}
-              blog={blog}
-            />
-          )}
-        </Route>
-        <Route exact path='/users'>
-          <h2>Users</h2>
-          <table>
-            <tbody>
-              <tr>
-                <th>Name</th>
-                <th>Blogs Created</th>
-              </tr>
-              {userList.map((user, idx) => 
-                <User
-                  key={idx}
-                  user={user}
-                />
-              )}
-            </tbody>
-          </table>
-        </Route>
-        <Route exact path='/users/:id'>
-          <UserBlog matchedUser={matchedUser}/>
-        </Route>
-        <Route exact path='/blogs/:id'>
-          <BlogView 
-            blog={matchedBlog}
-            handleLike={handleLike}
-            handleRemove={handleRemove}
-            notifyWith={notifyWith}
-            own={ matchedBlog ? user.username === matchedBlog.user.username : false  }
+  return (
+    <ThemeProvider theme={lightTheme}>
+      <Container>
+        <div>
+          <Menu 
+            user={user} 
+            handleLogout={handleLogout}
           />
-        </Route>
-      </Switch>
-    </div>
+          
+          <Notification />
+
+          <Switch>
+            <Route exact path='/'>
+
+              <Togglable buttonLabel='create new blog' ref={blogFormRef}>
+                <NewBlog blogFormRef={blogFormRef}/>
+              </Togglable>
+
+              <h2>blogs</h2>
+
+              <TableContainer component={Paper}>
+                <Table>
+                  <TableBody>
+                    {blogs.sort(byLikes).map(blog =>
+                      <Blog
+                        key={blog.id}
+                        blog={blog}
+                      />
+                    )}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Route>
+            <Route exact path='/users'>
+              <h2>Users</h2>
+              <TableContainer>
+                <Table>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell>Name</TableCell>
+                      <TableCell>Blogs Created</TableCell>
+                    </TableRow>
+                    {userList.map((user, idx) => 
+                      <User
+                        key={idx}
+                        user={user}
+                      />
+                    )}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Route>
+            <Route exact path='/users/:id'>
+              <UserBlog matchedUser={matchedUser}/>
+            </Route>
+            <Route exact path='/blogs/:id'>
+              <BlogView 
+                blog={matchedBlog}
+                handleLike={handleLike}
+                handleRemove={handleRemove}
+                notifyWith={notifyWith}
+                own={ matchedBlog ? user.username === matchedBlog.user.username : false  }
+              />
+            </Route>
+          </Switch>
+        </div>
+      </Container>
+    </ThemeProvider>
   )
 }
 
