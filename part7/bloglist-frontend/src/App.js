@@ -1,28 +1,27 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import NewBlog from './components/NewBlog'
 
-import blogService from './services/blogs'
+import { initializeBlogs } from './reducers/blogsReducer'
 import loginService from './services/login'
 import storage from './utils/storage'
-import { useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import { likeBlog, removeBlog } from './reducers/blogsReducer'
 import { setNotification } from './reducers/notificationReducer'
 
 const App = () => {
+  const blogs = useSelector(state => state.blogs)
   const dispatch = useDispatch()
-  const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const blogFormRef = React.createRef()
+  const blogFormRef = useRef()
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs(blogs)
-    )
-  }, [])
+    dispatch(initializeBlogs())
+  }, [dispatch])
 
   useEffect(() => {
     const user = storage.loadUser()
@@ -52,31 +51,17 @@ const App = () => {
     }
   }
 
-  const createBlog = async (blog) => {
-    try {
-      const newBlog = await blogService.create(blog)
-      blogFormRef.current.toggleVisibility()
-      setBlogs(blogs.concat(newBlog))
-      notifyWith(`a new blog '${newBlog.title}' by ${newBlog.author} added!`)
-    } catch (exception) {
-      console.log(exception)
-    }
-  }
-
   const handleLike = async (id) => {
-    const blogToLike = blogs.find(b => b.id === id)
-    const likedBlog = { ...blogToLike, likes: blogToLike.likes + 1, user: blogToLike.user.id }
-    await blogService.update(likedBlog)
-    setBlogs(blogs.map(b => b.id === id ? { ...blogToLike, likes: blogToLike.likes + 1 } : b))
+    const blogToLike = blogs.find(a => a.id === id)
+    dispatch(likeBlog(blogToLike))
     notifyWith(`You liked ${blogToLike.title}`)
   }
 
   const handleRemove = async (id) => {
     const blogToRemove = blogs.find(b => b.id === id)
     const ok = window.confirm(`Remove blog ${blogToRemove.title} by ${blogToRemove.author}`)
-    if (ok) {
-      await blogService.remove(id)
-      setBlogs(blogs.filter(b => b.id !== id))
+    if(ok) {
+      dispatch(removeBlog(blogToRemove.id))
       notifyWith(`You deleted ${blogToRemove.title}`)
     }
   }
@@ -129,7 +114,7 @@ const App = () => {
       </p>
 
       <Togglable buttonLabel='create new blog' ref={blogFormRef}>
-        <NewBlog createBlog={createBlog} />
+        <NewBlog blogFormRef={blogFormRef}/>
       </Togglable>
 
       {blogs.sort(byLikes).map(blog =>
